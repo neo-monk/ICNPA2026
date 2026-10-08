@@ -64,7 +64,8 @@ function processCSVData(records) {
     });
   });
 
-return Array.from(sectionMap.values()).sort((a, b) => 
+  // Sort sections alphabetically/numerically by section_label (A to Z)
+  return Array.from(sectionMap.values()).sort((a, b) =>
     a.label.localeCompare(b.label, undefined, { numeric: true, sensitivity: 'base' })
   );
 }
@@ -76,7 +77,7 @@ function allEntries() {
 function renderContents() {
   contentsList.innerHTML = `<div class="contents-grid">${
     sections.map(s => `<div class="contents-item">
-      <a href="#${s.id}">${s.label}.${escapeHtml(s.title)}</a>
+      <a href="#${s.id}">${escapeHtml(s.label)}.${escapeHtml(s.title)}</a>
     </div>`).join("")
   }</div>`;
 }
@@ -145,8 +146,8 @@ function escapeHtml(s) {
 
 async function init() {
   try {
-    // Add cache-busting timestamp so GitHub Pages always fetches the newest CSV
-    const response = await fetch("./data.csv?v=" + new Date().getTime());
+    // Dynamic timestamp forces GitHub Pages/Browser to download the latest data.csv
+    const response = await fetch("./data.csv?v=" + Date.now());
     if (!response.ok) throw new Error(`Failed to load data.csv (Status: ${response.status})`);
     
     const csvText = await response.text();
